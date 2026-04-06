@@ -47,11 +47,11 @@ module.exports = {
     },
 
     async delete(id) {
-        const userDeleted = await conn('job')
+        const jobDeleted = await conn('job')
             .where( { id })
             .delete()
             .returning(['id', 'name']);
 
-        return userDeleted;
+        return jobDeleted;
     }
 }

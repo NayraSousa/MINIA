@@ -4,6 +4,7 @@ const cors = require('cors')
 const userRoutes = require("./routes/UserRoute")
 const authRoutes = require("./routes/AuthRoute")
 const jobRouter = require('./routes/JobRoute')
+const jobApplicationRouter = require('./routes/JobApplicationRoute')
 
 const app = express()
 
@@ -13,5 +14,6 @@ app.use(express.json())
 app.use(userRoutes)
 app.use(authRoutes)
 app.use(jobRouter)
+app.use(jobApplicationRouter)
 
 module.exports = app
