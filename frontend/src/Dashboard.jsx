@@ -103,6 +103,47 @@ export default function Dashboard(){
         setShowApplyModal(false)
         return
       }
+
+      // Se 403 por role, tenta atualizar role do usuário para 'candidate' e tentar novamente
+      if(res.status === 403){
+        const body = await res.json().catch(() => ({}))
+        if(body.error && body.error.toLowerCase().includes('role')){
+          const user = JSON.parse(localStorage.getItem('user') || 'null')
+          if(user && user.id){
+            // tenta atualizar role via PUT /user/:id
+            try{
+              const upd = await fetch(`http://localhost:3333/user/${user.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ role: 'candidate' })
+              })
+              if(upd.ok){
+                // atualizar localStorage
+                const updatedUser = { ...user, role: 'candidate' }
+                localStorage.setItem('user', JSON.stringify(updatedUser))
+                // tentar aplicar novamente
+                const retry = await fetch('http://localhost:3333/job_application', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                  body: JSON.stringify({ job_id: selectedJob.id })
+                })
+                if(retry.ok){
+                  setActionMessage('Candidatura enviada com sucesso')
+                  setShowApplyModal(false)
+                  return
+                }
+              } else {
+                const err = await upd.json().catch(() => ({}))
+                setActionMessage(err.error || 'Falha ao atualizar role do usuário')
+                return
+              }
+            }catch(err){
+              setActionMessage('Falha ao atualizar role do usuário')
+              return
+            }
+          }
+        }
+      }
     }catch(err){}
 
     // fallback mock
