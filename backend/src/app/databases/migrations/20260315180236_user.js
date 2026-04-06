@@ -4,11 +4,13 @@
  */
 exports.up = function(knex) {
     return knex.schema.createTable('user', function(table){
-        table.increments('id').primary();
+        table.uuid('id').primary();
         table.string('name').notNullable();
         table.string('email').notNullable();
         table.string('login', 50).unique().notNullable();
         table.string('password', 255).notNullable();
+        table.string('role').notNullable();
+        table.datetime('created_at').notNullable();
     })
 };
 
