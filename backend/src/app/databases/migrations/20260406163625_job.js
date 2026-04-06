@@ -4,7 +4,7 @@
  */
 exports.up = function(knex) {
     return knex.schema.createTable('job', function(table){
-        table.uuid('id').primary();
+        table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
         table.string('name').notNullable();
         table.text('description').notNullable();
         table.uuid('recruiter_id')
@@ -17,7 +17,7 @@ exports.up = function(knex) {
             .notNullable()
             .references('id')
             .inTable('company')
-        table.datetime('created_by')
+        table.string('created_by')
     })
   
 };

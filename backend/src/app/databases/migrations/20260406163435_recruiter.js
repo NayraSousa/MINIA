@@ -4,7 +4,7 @@
  */
 exports.up = function(knex) {
     return knex.schema.createTable('recruiter', function(table){
-        table.uuid('id').primary();
+        table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
         table.uuid('user_id')
             .unsigned()
             .notNullable()
