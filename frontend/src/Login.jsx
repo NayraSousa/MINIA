@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './login.css'
+import apiClient from './services/apiClient'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -15,15 +16,9 @@ export default function Login() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('http://localhost:3333/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: email, password })
-      })
-
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || 'Erro ao autenticar')
+      const { ok, data, status } = await apiClient.post('/auth', { login: email, password })
+      if (!ok) {
+        setError(data?.error || 'Erro ao autenticar')
         setLoading(false)
         return
       }
