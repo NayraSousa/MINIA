@@ -13,12 +13,12 @@ exports.up = function(knex) {
         table.uuid('job_id')
             .unsigned()
             .notNullable()
-            .unique()
             .references('id')
             .inTable('job');
+        table.text('curriculum').notNullable();          
         table.string('status').notNullable();
         table.double('ai_score');
-        table.dateTime('created_at');
+        table.timestamps(true, true);
         
     })
   

@@ -13,7 +13,6 @@ exports.up = function(knex) {
             .inTable('user')
             .onDelete('CASCADE')
             .onUpdate('CASCADE');
-        table.text('curriculum');
         table.string('linkedin_url');
         table.string('github_url');            
     })

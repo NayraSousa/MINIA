@@ -17,7 +17,8 @@ exports.up = function(knex) {
             .notNullable()
             .references('id')
             .inTable('company')
-        table.string('created_by')
+        table.string('created_by');
+        table.timestamps(true, true);
     })
   
 };

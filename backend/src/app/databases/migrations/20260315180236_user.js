@@ -10,7 +10,7 @@ exports.up = function(knex) {
         table.string('login', 50).unique().notNullable();
         table.string('password', 255).notNullable();
         table.string('role').notNullable();
-        table.datetime('created_at').notNullable();
+        table.timestamps(true, true);
     })
 };
 
