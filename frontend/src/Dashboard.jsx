@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './dashboard.css'
+import apiClient from './services/apiClient'
 
 export default function Dashboard(){
   const [jobs, setJobs] = useState([])
@@ -44,12 +45,9 @@ export default function Dashboard(){
       }
       ;(async function loadCandidate(){
         try{
-          const endpoint = user.role === 'recruiter' ? `http://localhost:3333/recruiter/user/${user.id}` : `http://localhost:3333/candidate/user/${user.id}`
-          const res = await fetch(endpoint, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-          const data = await res.json().catch(() => ({}))
-          if(res.ok){
+          const endpointPath = user.role === 'recruiter' ? `/recruiter/user/${user.id}` : `/candidate/user/${user.id}`
+          const { ok, data } = await apiClient.get(endpointPath)
+          if(ok){
             const profile = data.candidate || data.recruiter || null
             if(profile){
               setCandidate(profile)
@@ -64,12 +62,9 @@ export default function Dashboard(){
 
     async function loadJobs(){
       try{
-        const res = await fetch('http://localhost:3333/job', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        const data = await res.json()
-        if(!res.ok){
-          setError(data.error || 'Erro ao buscar vagas')
+        const { ok, data } = await apiClient.get('/job')
+        if(!ok){
+          setError(data?.error || 'Erro ao buscar vagas')
           setLoading(false)
           return
         }
@@ -107,24 +102,19 @@ export default function Dashboard(){
     try{
       // verificar se já existe profile (candidate ou recruiter) para o user
       const isRecruiter = user.role === 'recruiter'
-      const getEndpoint = isRecruiter ? `http://localhost:3333/recruiter/user/${user.id}` : `http://localhost:3333/candidate/user/${user.id}`
-      const getRes = await fetch(getEndpoint, { headers: { Authorization: `Bearer ${token}` } })
-      const getData = await getRes.json().catch(() => ({}))
+      const getPath = isRecruiter ? `/recruiter/user/${user.id}` : `/candidate/user/${user.id}`
+      const getResObj = await apiClient.get(getPath)
+      const getData = getResObj.data || {}
       const body = { user_id: user.id, linkedin_url: '', github_url: '' }
 
-      if(getRes.ok){
+      if(getResObj.ok){
         const existing = getData.candidate || getData.recruiter || null
         if(existing && existing.id){
           // atualizar
-          const updEndpoint = isRecruiter ? `http://localhost:3333/recruiter/${existing.id}` : `http://localhost:3333/candidate/${existing.id}`
-          const upd = await fetch(updEndpoint, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-            body: JSON.stringify(body)
-          })
-          const updData = await upd.json().catch(() => ({}))
-          if(upd.ok){
-            const saved = updData.candidate || updData.recruiter || existing
+          const updPath = isRecruiter ? `/recruiter/${existing.id}` : `/candidate/${existing.id}`
+          const updObj = await apiClient.put(updPath, body)
+          if(updObj.ok){
+            const saved = updObj.data.candidate || updObj.data.recruiter || existing
             setCandidate(saved)
             localStorage.setItem('candidate', JSON.stringify(saved))
             setActionMessage(isRecruiter ? 'Perfil de recrutador atualizado' : 'Perfil de candidato atualizado')
@@ -133,15 +123,10 @@ export default function Dashboard(){
           }
         } else {
           // criar
-          const createEndpoint = isRecruiter ? 'http://localhost:3333/recruiter' : 'http://localhost:3333/candidate'
-          const create = await fetch(createEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-            body: JSON.stringify(body)
-          })
-          const createData = await create.json().catch(() => ({}))
-          if(create.ok && (createData.candidate || createData.recruiter || createData.id)){
-            const saved = createData.candidate || createData.recruiter || createData
+          const createPath = isRecruiter ? '/recruiter' : '/candidate'
+          const createObj = await apiClient.post(createPath, body)
+          if(createObj.ok && (createObj.data.candidate || createObj.data.recruiter || createObj.data.id)){
+            const saved = createObj.data.candidate || createObj.data.recruiter || createObj.data
             setCandidate(saved)
             localStorage.setItem('candidate', JSON.stringify(saved))
             setActionMessage(isRecruiter ? 'Perfil de recrutador criado' : 'Perfil de candidato criado')
@@ -179,13 +164,8 @@ export default function Dashboard(){
         return
       }
 
-      const res = await fetch('http://localhost:3333/job_application', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ job_id: selectedJob.id, candidate_id, curriculum })
-      })
-
-      if(res.ok){
+      const resObj = await apiClient.post('/job_application', { job_id: selectedJob.id, candidate_id, curriculum })
+      if(resObj.ok){
         setActionMessage('Candidatura enviada com sucesso')
         setShowApplyModal(false)
         return
@@ -199,33 +179,24 @@ export default function Dashboard(){
             if(user && user.id){
               // tenta atualizar role via PUT /user/:id
               try{
-                const upd = await fetch(`http://localhost:3333/user/${user.id}`, {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify({ role: 'candidate' })
-                })
+                const upd = await apiClient.put(`/user/${user.id}`, { role: 'candidate' })
                 if(upd.ok){
                   // atualizar localStorage
                   const updatedUser = { ...user, role: 'candidate' }
                   localStorage.setItem('user', JSON.stringify(updatedUser))
                   // tentar buscar profile (candidate ou recruiter) do backend
                   try{
-                    const profileEndpoint = updatedUser.role === 'recruiter' ? `http://localhost:3333/recruiter/user/${user.id}` : `http://localhost:3333/candidate/user/${user.id}`
-                    const resC = await fetch(profileEndpoint, { headers: { Authorization: `Bearer ${token}` } })
-                    const dataC = await resC.json().catch(() => ({}))
-                    const profile = dataC.candidate || dataC.recruiter || null
-                    if(resC.ok && profile && profile.id){
+                    const profilePath = updatedUser.role === 'recruiter' ? `/recruiter/user/${user.id}` : `/candidate/user/${user.id}`
+                    const resCObj = await apiClient.get(profilePath)
+                    const profile = resCObj.data?.candidate || resCObj.data?.recruiter || null
+                    if(resCObj.ok && profile && profile.id){
                       setCandidate(profile)
                       localStorage.setItem('candidate', JSON.stringify(profile))
                       if(updatedUser.role === 'recruiter'){
                         setActionMessage('Usuário é recrutador; não é permitido candidatar')
                         return
                       }
-                      const retry = await fetch('http://localhost:3333/job_application', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                        body: JSON.stringify({ job_id: selectedJob.id, candidate_id: profile.id, curriculum: resume })
-                      })
+                      const retry = await apiClient.post('/job_application', { job_id: selectedJob.id, candidate_id: profile.id, curriculum: resume })
                       if(retry.ok){
                         setActionMessage('Candidatura enviada com sucesso')
                         setShowApplyModal(false)
