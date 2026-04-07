@@ -2,13 +2,11 @@ const jobApplicationService = require('../services/JobApplicationService');
 
 module.exports = {
     async create (request, response) {
-        const { job_id } = request.body;
-        const candidate_id = "bea02554-98fa-4416-a73c-78fe6b197ba4";
-        const created_at = new Date();
+        const { job_id, candidate_id, curriculum } = request.body;
         const status = "Inscrito"
         const ai_score = "99.9"
 
-        jobApplication = await jobApplicationService.create(candidate_id, job_id, status, ai_score, created_at);
+        const jobApplication = await jobApplicationService.create(candidate_id, job_id, curriculum, status, ai_score);
 
         return response.status(201).json(
             {

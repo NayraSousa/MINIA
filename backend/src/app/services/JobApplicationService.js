@@ -1,8 +1,8 @@
 const jobApplicationRepository = require('../repository/JobApplicationRepository');
 
 module.exports = {
-    async create(candidate_id, job_id, status, ai_score, created_at){
-        return jobApplicationRepository.create(candidate_id, job_id, status, ai_score, created_at);
+    async create(candidate_id, job_id, curriculum, status, ai_score, created_at){
+        return jobApplicationRepository.create(candidate_id, job_id, curriculum, status, ai_score, created_at);
     },
 
     async listAll() {

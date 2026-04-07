@@ -1,14 +1,14 @@
 const conn = require('../databases/conn');
 
 module.exports = {
-    async create(candidate_id, job_id, status, ai_score, created_at) {
+    async create(candidate_id, job_id, curriculum, status, ai_score) {
         const [jobApplication] = (await conn('job_application').insert(
             {
                 candidate_id,
                 job_id,
+                curriculum,
                 status,
                 ai_score,
-                created_at
             }
         ).returning(['id', 'status']));
 
