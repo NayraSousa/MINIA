@@ -3,9 +3,11 @@ const cors = require('cors')
 
 const userRoutes = require("./routes/UserRoute")
 const authRoutes = require("./routes/AuthRoute")
-const jobRouter = require('./routes/JobRoute')
-const jobApplicationRouter = require('./routes/JobApplicationRoute')
-const candidateRouter = require('./routes/CandidateRoute')
+const jobRoutes = require("./routes/JobRoute")
+const jobApplicationRoutes = require("./routes/JobApplicationRoute")
+const candidateRoutes = require("./routes/CandidateRoute")
+const recruiterRoutes = require("./routes/RecruiterRoute")
+const companyRoutes = require("./routes/CompanyRoute")
 
 const app = express()
 
@@ -14,8 +16,11 @@ app.use(express.json())
 
 app.use(userRoutes)
 app.use(authRoutes)
-app.use(jobRouter)
-app.use(jobApplicationRouter)
-app.use(candidateRouter)
+app.use(jobRoutes)
+app.use(jobApplicationRoutes)
+app.use(candidateRoutes)
+app.use(recruiterRoutes)
+app.use(companyRoutes)
+
 
 module.exports = app
