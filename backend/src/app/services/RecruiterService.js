@@ -3,8 +3,8 @@ const recruiterRepository = require('../repository/RecruiterRepository');
 const { listById, update } = require('./CandidateService');
 
 module.exports = {
-    async create (user_id, company_id, departament, responsability) {
-        return recruiterRepository.create(user_id, company_id, departament, responsability);
+    async create (user_id, company_id, departament, position) {
+        return recruiterRepository.create(user_id, company_id, departament, position);
 
     },
 

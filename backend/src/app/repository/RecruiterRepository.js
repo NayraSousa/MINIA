@@ -2,13 +2,13 @@ const conn = require('../databases/conn');
 const { listAll, listById } = require('./CandidateRepository');
 
 module.exports = {
-    async create(user_id, company_id, departament, responsability){
+    async create(user_id, company_id, departament, position){
         const [recruiter] = await conn('recruiter').insert(
             {
                 user_id,
                 company_id,
                 departament,
-                responsability
+                position
             }
         ).returning(['id']);
         return recruiter;

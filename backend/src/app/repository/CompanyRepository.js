@@ -3,8 +3,10 @@ const conn = require('../databases/conn')
 module.exports = {
     async create(name, cnpj){
         const [company] = await conn('company').insert(
+            {
             name,
             cnpj
+            }
         ).returning(['id']);
     return company;
     },

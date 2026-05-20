@@ -2,8 +2,8 @@ const userService = require('../services/UserService')
 
 module.exports = {
     async create (request, response) {
-        const {name, email, login, password} = request.body;
-        user = await userService.create(name, email, login, password);
+        const {name, email, login, password, role, github_url, linkedin_url, company_id} = request.body;
+        user = await userService.create(name, email, login, password, role, github_url, linkedin_url, company_id);
         
         return response.status(201).json(
             {

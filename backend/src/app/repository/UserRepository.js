@@ -1,13 +1,14 @@
 const conn = require('../databases/conn');
 
 module.exports = {
-    async create(name, email, login, password) {
+    async create(name, email, login, password, role) {
         const [user] = (await conn('user').insert(
             {
                 name,
                 email,
                 login, 
-                password
+                password,
+                role
             }
         ).returning(['id', 'name', 'email']));
         return user;
