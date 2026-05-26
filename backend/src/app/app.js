@@ -8,6 +8,7 @@ const jobApplicationRoutes = require("./routes/JobApplicationRoute")
 const candidateRoutes = require("./routes/CandidateRoute")
 const recruiterRoutes = require("./routes/RecruiterRoute")
 const companyRoutes = require("./routes/CompanyRoute")
+const analysisRouter = require("./routes/ResumeAnalysisRouter")
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use(jobApplicationRoutes)
 app.use(candidateRoutes)
 app.use(recruiterRoutes)
 app.use(companyRoutes)
+app.use(analysisRouter)
 
 
 module.exports = app
