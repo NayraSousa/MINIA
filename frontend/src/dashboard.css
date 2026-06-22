@@ -35,3 +35,24 @@
 @media(max-width:900px){
 	.two-column{flex-direction:column}
 }
+
+/* Recruiter dashboard */
+.recruiter-jobs{display:flex;flex-direction:column;gap:16px}
+.recruiter-job-card{background:#fff;padding:18px 22px;border-radius:12px;box-shadow:0 10px 30px rgba(12,8,35,0.04)}
+.recruiter-job-card h3{margin:0 0 6px 0}
+.recruiter-job-card label{display:block;margin-top:12px;margin-bottom:6px;font-weight:700;color:#222}
+.recruiter-job-card input{width:100%;padding:10px;border-radius:10px;border:1px solid #e6e6ea;background:#fbfbfc;box-sizing:border-box}
+.recruiter-job-card .primary{margin-top:14px;background:#6b46ff;color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:700}
+.recruiter-job-card .primary:disabled{opacity:0.6}
+.recruiter-job-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.recruiter-job-head .primary{background:#6b46ff;color:#fff;border:0;padding:10px 14px;border-radius:10px;font-weight:700;white-space:nowrap}
+.recruiter-job-head .primary:disabled{opacity:0.6}
+.ranked-list{margin-top:14px;border-top:1px solid #f0f0f2;padding-top:12px}
+.ranked-list h4{margin:0 0 8px 0;font-size:14px;color:#444}
+.ranked-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #f6f6f8}
+.ranked-row:last-child{border-bottom:0}
+.rank-pos{font-weight:700;color:#6b46ff;min-width:28px}
+.rank-candidate{flex:1;color:#333;font-size:14px}
+.rank-candidate .meta{color:#6b6b72;font-size:12px;margin-top:2px}
+.rank-score{background:#efeaff;color:#6b46ff;font-weight:700;padding:4px 10px;border-radius:999px;min-width:48px;text-align:center}
+.rank-status{color:#6b6b72;font-size:13px}

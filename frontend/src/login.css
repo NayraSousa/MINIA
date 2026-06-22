@@ -44,6 +44,11 @@
 .signup{margin-top:12px;color:#6f6f7a;font-size:13px}
 .signup a{color:#6b46ff;text-decoration:none}
 
+.role-toggle{display:flex;gap:8px;margin-top:4px}
+.role-btn{flex:1;padding:10px 12px;border:1px solid #e6e6ea;border-radius:8px;background:#fbfbfc;color:#444;font-weight:600;cursor:pointer;transition:all 0.15s ease}
+.role-btn:hover{border-color:#6b46ff;color:#6b46ff}
+.role-btn.active{background:#6b46ff;color:#fff;border-color:#6b46ff}
+
 @media(max-width:900px){
   .login-root{flex-direction:column;padding:20px}
   .left-panel,.right-panel{width:100%;border-radius:12px;margin-bottom:16px}

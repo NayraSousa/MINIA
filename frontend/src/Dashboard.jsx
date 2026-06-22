@@ -31,6 +31,10 @@ export default function Dashboard(){
 
     // carregar perfil do usuário para preencher currículo
     const user = JSON.parse(localStorage.getItem('user') || 'null')
+    if(user && user.role === 'recruiter'){
+      navigate('/recruiter')
+      return
+    }
     if(user){
       // se já tiver campos de resume/skills no objeto user, use-os
       if(user.resume) setResume(user.resume)

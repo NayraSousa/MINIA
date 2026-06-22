@@ -27,8 +27,8 @@ export default function Login() {
       localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
       setSuccess(true)
-      // redireciona para dashboard
-      navigate('/dashboard')
+      // redireciona para o painel conforme a role
+      navigate(data.user?.role === 'recruiter' ? '/recruiter' : '/dashboard')
     } catch (err) {
       setError('Falha na conexão com o servidor')
     } finally {
@@ -86,7 +86,7 @@ export default function Login() {
           {error && <div className="error">{error}</div>}
           {success && <div className="success">Login realizado com sucesso.</div>}
 
-          <p className="signup">Não possui conta? <a href="#">Criar conta</a></p>
+          <p className="signup">Não possui conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register') }}>Criar conta</a></p>
         </form>
       </div>
     </div>
