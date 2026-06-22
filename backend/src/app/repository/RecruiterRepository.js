@@ -20,7 +20,7 @@ module.exports = {
             'user_id',
             'company_id',
             'departament',
-            'responsability'
+            'position'
         );
         return recruiters;
     },
@@ -31,19 +31,20 @@ module.exports = {
             'user_id',
             'company_id',
             'departament',
-            'responsability'
+            'position'
         ).where('id', id);
         return recruiterFiltered;
     },
 
     async listByUserId(user_id) {
+
         const recruiterFiltered = await conn('recruiter').select(
             'id',
             'user_id',
             'company_id',
             'departament',
-            'responsability'
-        ).where('user_id', user_id).first();
+            'position'
+        ).where('user_id', user_id);
 
         return recruiterFiltered;
     },

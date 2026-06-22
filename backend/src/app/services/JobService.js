@@ -13,6 +13,10 @@ module.exports = {
         return jobRepository.listById(id);
     },
 
+    async listByRecruiterId(recruiter_id) {
+        return jobRepository.listByRecruiterId(recruiter_id);
+    },
+
     async update(id, data) {
         return jobRepository.update(id, data);
     },

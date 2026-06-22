@@ -29,6 +29,15 @@ module.exports = {
         return companyFiltered;
     },
 
+    async listByCnpj(cnpj){
+        const companyFiltered = await conn('company').select(
+            'id',
+            'name',
+            'cnpj'
+        ).where('cnpj', cnpj).first();
+        return companyFiltered;
+    },
+
     async update(id, data){
         const companyUpdated = await conn('company')
             .where({ id })

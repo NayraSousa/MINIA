@@ -3,10 +3,29 @@ const { listById } = require('./CandidateController');
 
 module.exports = {
     async create(request, response) {
-        const { user_id, company_id, departament, responsability } = request.body;
+        const { user_id, company_id, departament, position } = request.body;
 
-        recruiter = await recruiterService.create(user_id, company_id, departament, responsability);
+        recruiter = await recruiterService.create(user_id, company_id, departament, position);
         return response.status(201).json({ recruiter });
+    },
+
+    async completeProfile(request, response) {
+        try {
+            const userId = request.userId;
+            const { company_name, cnpj, department, position } = request.body;
+            const recruiter = await recruiterService.completeProfile({
+                user_id: userId,
+                company_name,
+                cnpj,
+                department,
+                position
+            });
+            return response.status(201).json({ recruiter });
+        } catch (err) {
+            const message = err && err.message ? err.message : 'Falha ao completar perfil';
+            const status = message.includes('obrigatório') ? 400 : 500;
+            return response.status(status).json({ error: message });
+        }
     },
 
     async listAll(request, response) {
@@ -26,8 +45,10 @@ module.exports = {
         const { user_id } = request.params;
         const recruiter = await recruiterService.listByUserId(user_id);
 
-        if (!recruiter) return response.status(404).send({ error: 'Recruiter not found' });
-        return response.status(200).json({ recruiter });
+        if (!recruiter || recruiter.length === 0) {
+            return response.status(404).send({ error: 'Recruiter profile not found' });
+        }
+        return response.status(200).json({ recruiter: recruiter[0] });
     },
 
     async update(request, response) {
@@ -43,7 +64,6 @@ module.exports = {
     async delete(request, response) {
         const { id } = request.params;
         const recruiterDeleted = await recruiterService.delete(id);
-
         return response.status(200).json({recruiterDeleted});
     }
 }

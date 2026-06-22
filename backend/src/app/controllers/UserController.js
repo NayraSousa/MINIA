@@ -2,18 +2,14 @@ const userService = require('../services/UserService')
 
 module.exports = {
     async create (request, response) {
-        const {name, email, login, password, role, github_url, linkedin_url, company_id} = request.body;
-        user = await userService.create(name, email, login, password, role, github_url, linkedin_url, company_id);
-        
-        return response.status(201).json(
-            {
-                mensagem: {
-                    "User Created": {
-                        user
-                    }
-                }
-            }
-        )
+        try {
+            const user = await userService.create(request.body);
+            return response.status(201).json({ user });
+        } catch (err) {
+            const message = err && err.message ? err.message : 'Falha ao criar usuário';
+            const status = message.includes('obrigatório') ? 400 : 500;
+            return response.status(status).json({ error: message });
+        }
     },
     async listAll(request, response) {
         users = await userService.listAll();
@@ -43,7 +39,6 @@ module.exports = {
     async delete (request, response) {
         const { id } = request.params;
         const userDeleted = await userService.delete(id);
-
         return response.status(200).json({userDeleted});
 
     }

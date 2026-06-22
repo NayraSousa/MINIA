@@ -1,23 +1,28 @@
 const jobService = require('../services/JobService');
+const recruiterService = require('../services/RecruiterService');
+const userService = require('../services/UserService');
 
 module.exports = {
     async create (request, response) {
-        const { name, description } = request.body;
-        const recruiter_id = "f30b2dde-7ce6-4913-80b3-00aee94daf7b";
-        const company_id = "31932ba7-5560-44dc-9dc1-51e5cfebb16e";
-        const created_by = "Arthur"
+        const { name, description , userId} = request.body;
 
-        job = await jobService.create(name, description, recruiter_id, company_id, created_by);
+        const recruiter = await recruiterService.listByUserId(userId);
+        if(!recruiter){
+            return response.status(404).json({ error: 'Perfil de recrutador não encontrado' });
+        }
 
-        return response.status(201).json(
-            {
-                mensagem: {
-                    "Job Created": {
-                        job
-                    }
-                }
-            }
-        )
+        const userList = await userService.listById(userId);
+        const createdBy = (userList && userList[0] && userList[0].name) || null;
+
+        const job = await jobService.create(
+            name,
+            description,
+            recruiter[0].id,
+            recruiter[0].company_id,
+            createdBy
+        );
+
+        return response.status(201).json({ job });
     },
 
     async listAll(request, response) {
@@ -31,6 +36,12 @@ module.exports = {
         const { id } = request.params;
         const jobFiltered = await jobService.listById(id);
         return response.status(200).json({jobFiltered})
+    },
+
+    async listByRecruiter(request, response) {
+        const { recruiter_id } = request.params;
+        const jobs = await jobService.listByRecruiterId(recruiter_id);
+        return response.status(200).json({ jobs });
     },
 
     async update(request, response) {

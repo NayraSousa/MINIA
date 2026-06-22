@@ -18,8 +18,9 @@ module.exports = {
     async listAll() {
         const jobs = await conn('job').select(
             'id',
-            'name', 
+            'name',
             'description',
+            'recruiter_id',
             'created_by'
         );
 
@@ -31,10 +32,23 @@ module.exports = {
             'id',
             'name',
             'description',
+            'recruiter_id',
             'created_by'
         ).where('id', id);
 
         return jobFiltered;
+    },
+
+    async listByRecruiterId(recruiter_id) {
+        const jobs = await conn('job').select(
+            'id',
+            'name',
+            'description',
+            'recruiter_id',
+            'created_by'
+        ).where('recruiter_id', recruiter_id);
+
+        return jobs;
     },
 
     async update(id, data) {
